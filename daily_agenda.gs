@@ -1,7 +1,5 @@
 /**
- * Send me an email every morning with todays
- * meetings, meet link, attendees and meta data for 
- * copy and pasting into Obsidian
+ * Lists 10 upcoming events in the user's calendar.
  */
 function sendEmailWithTodaysEvents() {
   // Just for debugging
@@ -47,18 +45,21 @@ function sendEmailWithTodaysEvents() {
         }
 
         // Get teh attendees
-        for (p = 0; p < event.attendees.length; p++) {
-          var emailaddress = event.attendees[p].email;
-          var name = emailaddress.substring(0, emailaddress.lastIndexOf("@"))
-          words = name.split(".");
+        if (event.attendees) {
+          for (p = 0; p < event.attendees.length; p++) {
+            var emailaddress = event.attendees[p].email;
+            var name = emailaddress.substring(0, emailaddress.lastIndexOf("@"))
+            words = name.split(".");
 
-          for (let q = 0; q < words.length; q++) {
-            words[q] = words[q][0].toUpperCase() + words[q].substr(1);
+            for (let q = 0; q < words.length; q++) {
+              words[q] = words[q][0].toUpperCase() + words[q].substr(1);
+            }
+            name = words.join(" ");
+
+            eventAttendees = eventAttendees + "\t- [["+ name  +"]]\n";
           }
-          name = words.join(" ");
-
-          eventAttendees = eventAttendees + "\t- [["+ name  +"]]\n";
         }
+        
 
         
         eventText = "### "+ start +" - "+ end +" "+ event.summary +"\n"+
@@ -74,7 +75,7 @@ function sendEmailWithTodaysEvents() {
       // Email me the list
       
       MailApp.sendEmail(
-        "<email_to_receive_agenda>", 
+        "mike.pearce@mytutor.co.uk", 
         "Todays Meetings Bruh", 
         message);
                 
